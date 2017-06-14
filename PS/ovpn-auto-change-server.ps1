@@ -1,6 +1,6 @@
 $ethName = "OVPN" # Set name for OpenVPN ethernet adapter.
 $ConfFilesFilter = "*UDP.ovpn" # Set mask for .ovpn config files (here I'm taking only files ending with UDP in name)
-$regexSrvAddr = "(?<=remote )(.*)(?= )" # Set regular expresion to extract server address from .ovpn config file
+$regexSrvAddr = "(?<=^remote )(.*)(?= )" # Set regular expresion to extract server address from .ovpn config file
 $ovpnExe = "C:\Program Files\OpenVPN\bin\openvpn.exe" # Set openvpn.exe destination
 $confDir = "C:\Program Files\OpenVPN\config\" # Set directory where you store config files
 $confFiles = Get-ChildItem $confDir -Filter $ConfFilesFilter # Get list o files in config directory
