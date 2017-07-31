@@ -13,7 +13,7 @@ while($true) {
     $server = get-content ($confDir + $config) | Select-String -Pattern "$regexSrvAddr" -AllMatches | % { $_.Matches } | % { $_.Value }
     Write-Host "Checking connection to $server"
     # Testing connection to that server. If unreachable - skip.
-    if (Test-Connection -computername $server) {
+    if (Test-Connection -computername $server -Quiet) {
       # Killing previous ovpn process if exists.
       Write-Host "Connection succeed, looking for active ovpn process."
       if (($proc = Get-Process openvpn -ErrorAction SilentlyContinue) -ne $Null) {
