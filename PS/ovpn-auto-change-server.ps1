@@ -11,21 +11,21 @@ while($true) {
   forEach($config in $confFiles) {
     # Getting server name from config file
     $server = get-content ($confDir + $config) | Select-String -Pattern "$regexSrvAddr" -AllMatches | % { $_.Matches } | % { $_.Value }
-    Write-Host "Checking connection to $server"
+    Write-Host "Checking connection to $server" -foreground "Green"
     # Testing connection to that server. If unreachable - skip.
     if (Test-Connection -computername $server -Quiet) {
       # Killing previous ovpn process if exists.
-      Write-Host "Connection succeed, looking for active ovpn process."
+      Write-Host "Connection succeed, looking for active ovpn process." -foreground "Green"
       if (($proc = Get-Process openvpn -ErrorAction SilentlyContinue) -ne $Null) {
         Stop-Process -inputobject $proc -PassThru -Force -ErrorAction SilentlyContinue
         if($?) {
-          Write-host $proc " Stopped Successfully"
+          Write-host $proc "Stopped Successfully" -foreground "Green"
         }
         else {
-          Write-Error $error[0]
+          Write-Error $error[0] -foreground "Red"
         }
         # Write-Host "Process openvpn.exe was successfuly killed."
-      } else {Write-Host "OpenVPN not started. Nothing to kill."}
+      } else {Write-Host "OpenVPN not started. Nothing to kill." -foreground "Green"} 
       cd $confDir
       # Starting ovpn
       Start-Process -FilePath "$ovpnExe" -Argumentlist "--config","$config" -NoNewWindow
@@ -38,6 +38,9 @@ while($true) {
         $i++
         Start-Sleep -s 60
       }
-    } else {continue}
+    } else {
+        Write-host $proc "Connection to $server failed. Moving to the next one" -foreground "Green"
+        continue
+      }
   } 
 }
