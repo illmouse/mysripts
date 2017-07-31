@@ -1,4 +1,5 @@
 $ethName = "OVPN" # Set name for OpenVPN ethernet adapter.
+$ethernet = Get-NetAdapter | Where-Object Name -EQ "$ethName" # Getting eth adapter by name for futher checking.
 $ConfFilesFilter = "*UDP.ovpn" # Set mask for .ovpn config files (here I'm taking only files ending with UDP in name)
 $regexSrvAddr = "(?<=remote ).*net" # Set regular expresion to extract server address from .ovpn config file
 $ovpnExe = "C:\Program Files\OpenVPN\bin\openvpn.exe" # Set openvpn.exe destination
@@ -30,11 +31,11 @@ while($true) {
       # Starting ovpn
       Start-Process -FilePath "$ovpnExe" -Argumentlist "--config","$config" -NoNewWindow
       # Give it 1 min to connect
-      Start-Sleep -s 60
+      Start-Sleep -s 120
       # Reseting counter
       $i = 1
       # While counter haven't reached 180 (3 hours) and ethernet adapter is up do this loop. If connection drops end loop and start new connection
-      while ($i -le $timeout -and (Get-NetAdapter | Where-Object Name -EQ "$ethName").Status -eq "Up") {
+      while ($i -le $timeout -and $ethernet.Status -eq "Up") {
         $i++
         Start-Sleep -s 60
       }
